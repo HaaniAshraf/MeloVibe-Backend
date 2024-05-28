@@ -1,9 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { signupGet, signupPost } = require("../Controller/userController");
+const {
+  loginPost,
+  signupPost,
+  otpPost,
+} = require("../Controller/userController");
+const { logVerify, signVerify } = require("../Middleware/auth");
 
-router.get('/signup',signupGet)
-      .post('/signup',signupPost)
+router
+  .post("/login", logVerify, loginPost)
+  .post("/signup", signVerify, signupPost)
+  .post("/otp", otpPost);
 
-module.exports=router
+module.exports = router;
