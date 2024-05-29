@@ -22,7 +22,7 @@ module.exports = {
     }
   },
 
-  otpPost: async (req, res) => {
+  otpUser: async (req, res) => {
     const { otp, action } = req.body;
     try {
       if (action === "verify") {

@@ -73,7 +73,7 @@ const emailverification = (email, otp) => {
   const mailOption = {
     from: {
       name: "MeloVibe",
-      address: "haaniashraf1234@gmail.com",
+      address: "carlodon372@gmail.com",
     },
     to: email,
     subject: "Verify OTP",

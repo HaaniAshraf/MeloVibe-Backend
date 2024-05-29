@@ -3,10 +3,9 @@ const router = express.Router();
 const upload = require("../Middleware/multer");
 
 const {
-  artistLoginGet,
   artistLoginPost,
-  artistSignupGet,
   artistSignupPost,
+  otpArtist,
   artistHomeGet,
 } = require("../Controller/artistController");
 const { artistLogVerify, artistSignVerify } = require("../Middleware/auth");
@@ -19,6 +18,7 @@ router
     artistSignVerify,
     artistSignupPost
   )
+  .post("/otp", otpArtist)
   .get("/artistHome/:email", artistHomeGet);
 
 module.exports = router;

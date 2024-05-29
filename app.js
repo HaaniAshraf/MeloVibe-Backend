@@ -8,7 +8,7 @@ require("dotenv").config();
 const dbConnection = require("./config/db");
 const corsOptions = {
   origin: "http://localhost:5173",
-  credentials: true
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -27,8 +27,10 @@ app.use(express.static("Public"));
 
 const userRouter = require("./Router/userRouter");
 const artistRouter = require("./Router/artistRouter");
+const adminRouter = require("./Router/adminRouter");
 app.use("/", userRouter);
 app.use("/artist", artistRouter);
+app.use("/admin", adminRouter);
 
 dbConnection()
   .then(() => {
