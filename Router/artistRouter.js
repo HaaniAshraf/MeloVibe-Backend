@@ -7,6 +7,7 @@ const {
   artistSignupPost,
   otpArtist,
   artistHomeGet,
+  artistProfileGet,
 } = require("../Controller/artistController");
 const { artistLogVerify, artistSignVerify } = require("../Middleware/auth");
 
@@ -19,6 +20,7 @@ router
     artistSignupPost
   )
   .post("/otp", otpArtist)
-  .get("/artistHome/:email", artistHomeGet);
+  .get("/artistHome/:id", artistHomeGet)
+  .get("/artistProfile/:id", artistProfileGet)
 
 module.exports = router;

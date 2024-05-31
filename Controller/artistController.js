@@ -1,13 +1,15 @@
 const Artist = require("../Model/artistSchema/artistModel");
+const mongoose = require("mongoose");
 
 module.exports = {
   artistLoginPost: async (req, res) => {
     try {
       const { email } = req.body;
+      const artist = await Artist.findOne({ email });
       res.status(200).json({
         success: true,
         message: "Artist created successfully",
-        data: email,
+        data: artist._id,
       });
     } catch (error) {
       console.error("Artist signup error:", error);
@@ -38,9 +40,10 @@ module.exports = {
         }
         artist.otpVerified = true;
         await artist.save();
-        res
-          .status(200)
-          .json({ success: true, message: "OTP verified and artist registered" });
+        res.status(200).json({
+          success: true,
+          message: "OTP verified and artist registered",
+        });
       } else if (action === "resend") {
         const otp = Math.floor(Math.random() * 9000) + 1000;
         console.log("resendOtp:", otp);
@@ -59,8 +62,22 @@ module.exports = {
 
   artistHomeGet: async (req, res) => {
     try {
-      const { email } = req.params;
-      const artist = await Artist.findOne({ email });
+      const { id } = req.params;
+      const artist = await Artist.findById(id);
+      if (!artist) {
+        return res.status(404).json({ error: "Artist not found" });
+      }
+      res.status(200).json({ success: true, data: artist });
+    } catch (error) {
+      console.error("Error fetching artist data:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  artistProfileGet: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const artist = await Artist.findById(id);
       if (!artist) {
         return res.status(404).json({ error: "Artist not found" });
       }
