@@ -2,15 +2,48 @@ const User = require("../Model/userSchema/userModel");
 const { emailverification } = require("../Utilities/nodemailer");
 const { ObjectId } = require("mongoose").Types;
 const bcrypt = require("bcrypt");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../Utilities/tokens");
+const verifyToken = require("../Middleware/authentication");
 
 module.exports = {
   loginPost: async (req, res) => {
     try {
-      res.status(201).json({ success: true });
+      const { email } = req.body;
+      const user = await User.findOne({ email: email });
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+      user.refreshToken = refreshToken;
+      await user.save();
+      res.status(201).json({ success: true, accessToken, refreshToken });
     } catch (error) {
-      console.error("Signup error:", error);
+      console.error("Login error:", error);
       res.status(500).json({ error: "Internal server error" });
     }
+  },
+
+  userToken: async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.sendStatus(403);
+    }
+    const user = await User.findOne({ refreshToken });
+    if (!user) {
+      return res.sendStatus(403);
+    }
+    jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET,
+      (err, userPayload) => {
+        if (err) {
+          return res.sendStatus(403);
+        }
+        const accessToken = generateAccessToken(userPayload);
+        res.json({ accessToken });
+      }
+    );
   },
 
   signupPost: async (req, res) => {
@@ -105,5 +138,19 @@ module.exports = {
       console.error("Error during new password:", error);
       res.status(500).send("Internal Server Error");
     }
+  },
+
+  logoutUser: async (req, res) => {
+    const { refreshToken } = req.body;
+    const user = await User.findOne({ refreshToken });
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+    res.sendStatus(204);
+  },
+
+  protectedUser: async (req, res) => {
+    res.json({ message: "This is a protected route" });
   },
 };

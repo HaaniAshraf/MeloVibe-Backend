@@ -11,7 +11,7 @@ const {
   forgotPasswordArtist,
   newArtistPassword,
 } = require("../Controller/artistController");
-const { artistLogVerify, artistSignVerify } = require("../Middleware/auth");
+const { artistLogVerify, artistSignVerify } = require("../Middleware/validate");
 
 router
   .post("/login", artistLogVerify, artistLoginPost)

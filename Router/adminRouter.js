@@ -8,7 +8,7 @@ const {
   forgotPasswordAdmin,
   newAdminPassword,
 } = require("../Controller/adminController");
-const { adminLogVerify, adminSignverify } = require("../Middleware/auth");
+const { adminLogVerify, adminSignverify } = require("../Middleware/validate");
 
 router
   .post("/login", adminLogVerify, adminLoginPost)
