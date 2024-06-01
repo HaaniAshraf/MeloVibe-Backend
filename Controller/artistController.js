@@ -1,5 +1,7 @@
 const Artist = require("../Model/artistSchema/artistModel");
-const mongoose = require("mongoose");
+const { emailverification } = require("../Utilities/nodemailer");
+const { ObjectId } = require("mongoose").Types;
+const bcrypt = require("bcrypt");
 
 module.exports = {
   artistLoginPost: async (req, res) => {
@@ -85,6 +87,56 @@ module.exports = {
     } catch (error) {
       console.error("Error fetching artist data:", error);
       res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  forgotPasswordArtist: async (req, res) => {
+    try {
+      const email = req.body.email;
+      req.session.email = email;
+      const otp = Math.floor(Math.random() * 9000) + 1000;
+      req.session.otp = otp;
+      emailverification(req.session.email, otp);
+      const artist = await Artist.findOne({ email: req.session.email });
+      if (!artist) {
+        return res.status(400).json({ error: "Artist not found" });
+      }
+      req.session.artistId = new ObjectId(artist._id);
+      res.status(200).json({ success: true, message: "OTP sent successfully" });
+    } catch (error) {
+      console.error("Error during input email:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  },
+
+  newArtistPassword: async (req, res) => {
+    try {
+      const artistId = req.session.artistId;
+      const { password, cpassword } = req.body;
+      if (!password || !cpassword) {
+        return res
+          .status(400)
+          .json({ error: "Both password fields are required" });
+      }
+      if (password !== cpassword) {
+        return res.status(400).json({ error: "Passwords do not match" });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await Artist.findByIdAndUpdate(artistId, { password: hashedPassword });
+      res
+        .status(200)
+        .json({ success: true, message: "Password updated successfully" });
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+          return res
+            .status(500)
+            .json({ success: false, message: "Internal Server Error" });
+        }
+      });
+    } catch (error) {
+      console.error("Error during new password:", error);
+      res.status(500).send("Internal Server Error");
     }
   },
 };
