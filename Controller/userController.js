@@ -13,11 +13,8 @@ module.exports = {
     try {
       const { email } = req.body;
       const user = await User.findOne({ email: email });
-      const accessToken = generateAccessToken(user);
-      const refreshToken = generateRefreshToken(user);
-      user.refreshToken = refreshToken;
       await user.save();
-      res.status(201).json({ success: true, accessToken, refreshToken });
+      res.status(201).json({ success: true });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -140,17 +137,17 @@ module.exports = {
     }
   },
 
-  logoutUser: async (req, res) => {
-    const { refreshToken } = req.body;
-    const user = await User.findOne({ refreshToken });
-    if (user) {
-      user.refreshToken = null;
-      await user.save();
+  userProfileGet:async(req,res)=>{
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.status(200).json({ success: true, data: user });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-    res.sendStatus(204);
-  },
-
-  protectedUser: async (req, res) => {
-    res.json({ message: "This is a protected route" });
-  },
+  }
 };

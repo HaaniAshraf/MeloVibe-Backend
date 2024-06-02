@@ -24,9 +24,6 @@ const signupSchema = mongoose.Schema({
     type: String,
     default: "active",
   },
-  refreshToken: {
-    type: String,
-  },
 });
 
 const User = mongoose.model("users", signupSchema);
