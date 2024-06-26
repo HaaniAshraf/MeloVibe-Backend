@@ -11,6 +11,12 @@ const artistSchema = mongoose.Schema({
     type: String,
     unique: true,
   },
+  phone: {
+    type: String,
+  },
+  dob: {
+    type: Date,
+  },
   password: {
     type: String,
   },

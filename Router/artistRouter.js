@@ -10,6 +10,7 @@ const {
   artistProfileGet,
   forgotPasswordArtist,
   newArtistPassword,
+  updateProfile,
 } = require("../Controller/artistController");
 const { artistLogVerify, artistSignVerify } = require("../Middleware/validate");
 
@@ -25,6 +26,7 @@ router
   .get("/artistHome/:id", artistHomeGet)
   .get("/artistProfile/:id", artistProfileGet)
   .post("/inputEmail", forgotPasswordArtist)
-  .post("/newPassword", newArtistPassword);
+  .post("/newPassword", newArtistPassword)
+  .put("/updateProfile/:id", upload.single("profileImg"), updateProfile);
 
 module.exports = router;

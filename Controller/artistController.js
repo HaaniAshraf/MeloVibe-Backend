@@ -139,4 +139,27 @@ module.exports = {
       res.status(500).send("Internal Server Error");
     }
   },
+
+  updateProfile: async (req, res) => {
+    const { id } = req.params;
+    const { name, phone, dob } = req.body;
+    let updateData = { name, phone, dob };
+    if (req.file) {
+      updateData.profileImg = req.file.filename;
+    }
+    try {
+      const artist = await Artist.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+      if (!artist) {
+        return res.status(404).json({ message: "Artist not found" });
+      }
+      res
+        .status(200)
+        .json({ message: "Profile updated successfully", data: artist });
+    } catch (error) {
+      console.error("Error updating artist profile:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  },
 };

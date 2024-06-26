@@ -21,6 +21,5 @@ router
   .post("/user/otp", otpUser)
   .post("/user/inputEmail", forgotPasswordUser)
   .post("/user/newPassword", newUserPassword)
-  .get("/user/profile/:id", userProfileGet)
 
 module.exports = router;
