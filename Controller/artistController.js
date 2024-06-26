@@ -2,16 +2,19 @@ const Artist = require("../Model/artistSchema/artistModel");
 const { emailverification } = require("../Utilities/nodemailer");
 const { ObjectId } = require("mongoose").Types;
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const secretKey = process.env.JWT_SECRET_KEY;
 
 module.exports = {
   artistLoginPost: async (req, res) => {
     try {
       const { email } = req.body;
       const artist = await Artist.findOne({ email });
+      const token = jwt.sign({ id: artist.id }, secretKey, { expiresIn: "1h" });
       res.status(200).json({
         success: true,
         message: "Artist created successfully",
-        data: artist._id,
+        token,
       });
     } catch (error) {
       console.error("Artist signup error:", error);
