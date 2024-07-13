@@ -10,8 +10,9 @@ const {
   newUserPassword,
   logoutUser,
   protectedUser,
-  userProfileGet
+  userProfileGet,
 } = require("../Controller/userController");
+const { getLatestSongs } = require("../Controller/musicController");
 const { logVerify, signVerify } = require("../Middleware/validate");
 const verifyToken = require("../Middleware/authentication");
 
@@ -21,5 +22,6 @@ router
   .post("/user/otp", otpUser)
   .post("/user/inputEmail", forgotPasswordUser)
   .post("/user/newPassword", newUserPassword)
+  .get("/latestSongs", getLatestSongs);
 
 module.exports = router;

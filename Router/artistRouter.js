@@ -12,7 +12,7 @@ const {
   newArtistPassword,
   updateProfile,
 } = require("../Controller/artistController");
-const { addSong } = require("../Controller/musicController");
+const { addSong, getArtistSongs } = require("../Controller/musicController");
 const { artistLogVerify, artistSignVerify } = require("../Middleware/validate");
 
 router
@@ -33,6 +33,7 @@ router
     "/addSong",
     upload.fields([{ name: "songImage" }, { name: "musicAudio" }]),
     addSong
-  );
+  )
+  .get('/songs/:artistId',getArtistSongs)
 
 module.exports = router;

@@ -11,7 +11,14 @@ const musicSchema = new mongoose.Schema({
   },
   artistName: {
     type: String,
+  },
+  artistId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Artist",
     required: true,
+  },
+  album: {
+    type: String,
   },
   musicCategory: {
     type: String,
